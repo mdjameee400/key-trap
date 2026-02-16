@@ -84,7 +84,7 @@ export default function HeroScreen() {
                 className="relative flex items-center justify-center -mb-10"
             >
                 <img
-                    src="/icon.png"
+                    src="/numpad.png"
                     alt="Key Trap Logo"
                     className="w-[160px] h-[160px] md:w-[240px] md:h-[240px] object-contain drop-shadow-[0_0_20px_rgba(34,211,238,0.2)] z-10"
                 />

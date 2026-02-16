@@ -33,7 +33,7 @@ export default function ResultScreen() {
                 transition={{ duration: 0.5, type: "spring" }}
                 className="mb-2"
             >
-                <img src="/icon.png" alt="Logo" className="w-16 h-16 object-contain drop-shadow-[0_0_10px_rgba(34,211,238,0.4)]" />
+                <img src="/numpad.png" alt="Logo" className="w-16 h-16 object-contain drop-shadow-[0_0_10px_rgba(34,211,238,0.4)]" />
             </motion.div>
 
             <motion.h2
