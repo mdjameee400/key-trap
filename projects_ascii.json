@@ -1,0 +1,27 @@
+{
+  "status": "success",
+  "result": [
+    {
+      "projectId": "key-trap",
+      "projectNumber": "8609490538",
+      "displayName": "Key Trap",
+      "name": "projects/key-trap",
+      "resources": {
+        "hostingSite": "key-trap"
+      },
+      "state": "ACTIVE",
+      "etag": "1_e9075421-50fb-4ac0-9248-5bfec3995463"
+    },
+    {
+      "projectId": "vocaply",
+      "projectNumber": "1066704448794",
+      "displayName": "Vocaply",
+      "name": "projects/vocaply",
+      "resources": {
+        "hostingSite": "vocaply"
+      },
+      "state": "ACTIVE",
+      "etag": "1_58b4c5c4-56aa-435b-8730-d751acbcc88f"
+    }
+  ]
+}
