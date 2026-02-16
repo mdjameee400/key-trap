@@ -272,7 +272,8 @@ npm run lint
 ```
 key-trap/
 ├── public/                      # Static assets
-│   ├── numpad.png              # App icon
+│   ├── icon.png                # Main app logo
+│   ├── numpad.png              # Favicon (high visibility)
 │   └── ...
 ├── src/                        # Source files
 │   ├── components/             # React components
