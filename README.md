@@ -9,7 +9,7 @@
 [![Vite](https://img.shields.io/badge/Vite-5.4.19-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.17-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-[Live Demo](https://keytrap.web.app) • [Report Bug](https://github.com/mdjameee400/key-trap/issues) • [Request Feature](https://github.com/mdjameee400/key-trap/issues)
+[Live Demo](https://key-trap.web.app) • [Report Bug](https://github.com/mdjameee400/key-trap/issues) • [Request Feature](https://github.com/mdjameee400/key-trap/issues)
 
 </div>
 
@@ -487,7 +487,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 **Project Link**: [https://github.com/mdjameee400/key-trap](https://github.com/mdjameee400/key-trap)
 
-**Live Demo**: [https://keytrap.web.app](https://keytrap.web.app)
+**Live Demo**: [https://key-trap.web.app](https://key-trap.web.app)
 
 ---
 
