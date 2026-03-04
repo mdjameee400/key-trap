@@ -44,19 +44,19 @@ export default function GameModeSelect() {
                     onClick={() => setPhase("mode-select")}
                     className="group relative flex flex-col items-center gap-6 p-8 rounded-xl neon-border-cyan bg-card/30 backdrop-blur-md transition-all duration-500 overflow-hidden"
                 >
-                    <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors" />
-                    <div className="relative z-10 p-4 rounded-full bg-primary/10 text-primary border border-primary/20 group-hover:scale-110 transition-transform duration-500">
-                        <Brain className="w-12 h-12" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="relative z-10 p-5 rounded-2xl bg-primary/10 text-primary border border-primary/20 group-hover:scale-110 group-hover:neon-border-cyan transition-all duration-500">
+                        <Brain className="w-12 h-12 text-glow-cyan" />
                     </div>
-                    <div className="relative z-10 text-center space-y-2">
-                        <h3 className="text-2xl font-display font-black uppercase tracking-widest text-primary text-glow-cyan">
+                    <div className="relative z-10 text-center space-y-3">
+                        <h3 className="text-3xl font-display font-black uppercase tracking-[0.2em] text-primary text-glow-cyan">
                             Memorize
                         </h3>
-                        <p className="text-sm font-body text-muted-foreground uppercase tracking-wider">
-                            Test your recall and typing speed
+                        <p className="text-sm font-body text-muted-foreground uppercase tracking-widest leading-relaxed">
+                            Master your mind &<br />conquer the keys
                         </p>
                     </div>
-                    <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+                    <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700" />
                 </motion.button>
 
                 {/* Guess Mode (Coming Soon) */}
@@ -64,22 +64,22 @@ export default function GameModeSelect() {
                     initial={{ opacity: 0, x: 30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="group relative flex flex-col items-center gap-6 p-8 rounded-xl border border-white/5 bg-white/5 opacity-60 cursor-not-allowed overflow-hidden"
+                    className="group relative flex flex-col items-center gap-6 p-8 rounded-xl border border-white/5 bg-white/5 opacity-40 grayscale-[0.5] cursor-not-allowed overflow-hidden"
                 >
-                    <div className="relative z-10 p-4 rounded-full bg-white/5 text-muted-foreground border border-white/10">
-                        <Sparkles className="w-12 h-12" />
+                    <div className="relative z-10 p-5 rounded-2xl bg-white/5 text-muted-foreground border border-white/10">
+                        <Sparkles className="w-12 h-12 opacity-50" />
                     </div>
-                    <div className="relative z-10 text-center space-y-2">
-                        <h3 className="text-2xl font-display font-black uppercase tracking-widest text-muted-foreground">
+                    <div className="relative z-10 text-center space-y-3">
+                        <h3 className="text-3xl font-display font-black uppercase tracking-[0.2em] text-muted-foreground">
                             Guess
                         </h3>
-                        <p className="text-sm font-body text-muted-foreground uppercase tracking-wider">
-                            Coming Soon
+                        <p className="text-sm font-body text-muted-foreground uppercase tracking-widest leading-relaxed">
+                            A new challenge<br />is calibrating...
                         </p>
                     </div>
-                    <div className="absolute top-4 right-4 rotate-12">
-                        <span className="px-2 py-1 text-[10px] font-display font-bold bg-muted/20 text-muted-foreground border border-white/10 rounded uppercase tracking-tighter">
-                            Locked
+                    <div className="absolute top-4 right-4 -rotate-12 group-hover:rotate-0 transition-transform duration-500">
+                        <span className="px-3 py-1 text-[10px] font-display font-bold bg-muted/20 text-muted-foreground border border-white/10 rounded-full uppercase tracking-tighter">
+                            Restricted
                         </span>
                     </div>
                 </motion.div>
