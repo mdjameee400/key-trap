@@ -15,7 +15,7 @@ export default function HeroScreen() {
 
     useEffect(() => {
         if (location.state?.autoStart && user) {
-            setPhase("mode-select");
+            setPhase("game-mode-select");
             // Clear state to prevent loop on refresh
             navigate("/", { replace: true, state: {} });
         }
@@ -32,7 +32,7 @@ export default function HeroScreen() {
 
     const handleStartGame = () => {
         if (user) {
-            setPhase("mode-select");
+            setPhase("game-mode-select");
         } else {
             toast.info("Please login to play the full game");
             navigate("/auth", { state: { redirect: "game" } });
@@ -138,7 +138,7 @@ export default function HeroScreen() {
                         bg-primary/10 text-primary neon-border-cyan rounded-lg
                         hover:bg-primary/20 transition-colors duration-300"
                 >
-                    Start Type
+                    Start Typing
                 </motion.button>
                 <motion.button
                     initial={{ opacity: 0, scale: 0.9 }}

@@ -3,6 +3,7 @@ import { AnimatePresence } from "framer-motion";
 import { GameProvider, useGame } from "../context/GameContext";
 import HeroScreen from "../components/game/HeroScreen";
 import ModeSelect from "../components/game/ModeSelect";
+import GameModeSelect from "../components/game/GameModeSelect";
 import MemoryPhase from "../components/game/MemoryPhase";
 import TypingPhase from "../components/game/TypingPhase";
 import ResultScreen from "../components/game/ResultScreen";
@@ -18,6 +19,7 @@ function GameRouter() {
       <div className="relative z-10 w-full h-full">
         <AnimatePresence mode="wait">
           {phase === "hero" && <HeroScreen key="hero" />}
+          {phase === "game-mode-select" && <GameModeSelect key="game-mode" />}
           {phase === "mode-select" && <ModeSelect key="mode" />}
           {phase === "memory" && <MemoryPhase key="memory" />}
           {phase === "typing" && <TypingPhase key="typing" />}
