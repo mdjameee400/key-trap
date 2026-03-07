@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { useGame } from "../../context/GameContext";
-import { GAME_MODES } from "../../lib/gameData";
+import { useGame } from "../../../context/GameContext";
+import { GAME_MODES } from "../../../lib/gameData";
 import { ArrowLeft } from "lucide-react";
 
 const modeStyles = {

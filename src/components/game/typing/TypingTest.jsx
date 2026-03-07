@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useGame } from "../../context/GameContext";
+import { useGame } from "../../../context/GameContext";
 import { RotateCcw, Timer, ArrowLeft, Home } from "lucide-react";
 
 export default function TypingTest() {

@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useGame } from "../../context/GameContext";
-import { ArrowLeft, Brain, Sparkles } from "lucide-react";
+import { ArrowLeft, Brain, Sparkles, Gift } from "lucide-react";
 
 export default function GameModeSelect() {
     const { setPhase } = useGame();
@@ -13,7 +13,7 @@ export default function GameModeSelect() {
             exit={{ opacity: 0 }}
             className="flex flex-col items-center justify-center min-h-screen gap-8 px-4"
         >
-            <div className="relative w-full max-w-2xl flex items-center justify-center mb-4">
+            <div className="relative w-full max-w-4xl flex items-center justify-center mb-4 text-center">
                 <motion.button
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -27,18 +27,18 @@ export default function GameModeSelect() {
                 <motion.h2
                     initial={{ y: -20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="text-3xl md:text-4xl font-display font-bold tracking-wider text-glow-cyan text-primary uppercase"
+                    className="text-3xl md:text-5xl font-display font-bold tracking-wider text-glow-cyan text-primary uppercase"
                 >
                     Choose Mission
                 </motion.h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
                 {/* Memorize Mode */}
                 <motion.button
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
+                    transition={{ delay: 0.1 }}
                     whileHover={{ scale: 1.05, y: -5 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setPhase("mode-select")}
@@ -52,7 +52,7 @@ export default function GameModeSelect() {
                         <h3 className="text-3xl font-display font-black uppercase tracking-[0.2em] text-primary text-glow-cyan">
                             Memorize
                         </h3>
-                        <p className="text-sm font-body text-muted-foreground uppercase tracking-widest leading-relaxed">
+                        <p className="text-xs font-body text-muted-foreground uppercase tracking-widest leading-relaxed">
                             Master your mind &<br />conquer the keys
                         </p>
                     </div>
@@ -61,9 +61,9 @@ export default function GameModeSelect() {
 
                 {/* Guess Mode (Coming Soon) */}
                 <motion.div
-                    initial={{ opacity: 0, x: 30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
                     className="group relative flex flex-col items-center gap-6 p-8 rounded-xl border border-white/5 bg-white/5 opacity-40 grayscale-[0.5] cursor-not-allowed overflow-hidden"
                 >
                     <div className="relative z-10 p-5 rounded-2xl bg-white/5 text-muted-foreground border border-white/10">
@@ -73,7 +73,7 @@ export default function GameModeSelect() {
                         <h3 className="text-3xl font-display font-black uppercase tracking-[0.2em] text-muted-foreground">
                             Guess
                         </h3>
-                        <p className="text-sm font-body text-muted-foreground uppercase tracking-widest leading-relaxed">
+                        <p className="text-xs font-body text-muted-foreground uppercase tracking-widest leading-relaxed">
                             A new challenge<br />is calibrating...
                         </p>
                     </div>
@@ -83,6 +83,31 @@ export default function GameModeSelect() {
                         </span>
                     </div>
                 </motion.div>
+
+                {/* Lucky Box Mode */}
+                <motion.button
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 }}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setPhase("lucky-box")}
+                    className="group relative flex flex-col items-center gap-6 p-8 rounded-xl neon-border-orange bg-card/30 backdrop-blur-md transition-all duration-500 overflow-hidden"
+                >
+                    <div className="absolute inset-0 bg-gradient-to-br from-neon-orange/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="relative z-10 p-5 rounded-2xl bg-neon-orange/10 text-neon-orange border border-neon-orange/20 group-hover:scale-110 group-hover:neon-border-orange transition-all duration-500">
+                        <Gift className="w-12 h-12 text-glow-orange" />
+                    </div>
+                    <div className="relative z-10 text-center space-y-3">
+                        <h3 className="text-3xl font-display font-black uppercase tracking-[0.2em] text-neon-orange text-glow-orange">
+                            Lucky Box
+                        </h3>
+                        <p className="text-xs font-body text-muted-foreground uppercase tracking-widest leading-relaxed">
+                            Choose wisely &<br />win the prize
+                        </p>
+                    </div>
+                    <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-neon-orange to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700" />
+                </motion.button>
             </div>
         </motion.div>
     );

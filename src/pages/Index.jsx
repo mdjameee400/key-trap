@@ -2,13 +2,14 @@ import React from "react";
 import { AnimatePresence } from "framer-motion";
 import { GameProvider, useGame } from "../context/GameContext";
 import HeroScreen from "../components/game/HeroScreen";
-import ModeSelect from "../components/game/ModeSelect";
 import GameModeSelect from "../components/game/GameModeSelect";
-import MemoryPhase from "../components/game/MemoryPhase";
-import TypingPhase from "../components/game/TypingPhase";
+import ModeSelect from "../components/game/memorize/ModeSelect";
+import MemoryPhase from "../components/game/memorize/MemoryPhase";
+import TypingPhase from "../components/game/typing/TypingPhase";
+import TypingTest from "../components/game/typing/TypingTest";
 import ResultScreen from "../components/game/ResultScreen";
-import TypingTest from "../components/game/TypingTest";
 import StarField from "../components/game/StarField";
+import LuckyBox from "../components/game/lucky-box/LuckyBox";
 
 function GameRouter() {
   const { phase } = useGame();
@@ -24,6 +25,7 @@ function GameRouter() {
           {phase === "memory" && <MemoryPhase key="memory" />}
           {phase === "typing" && <TypingPhase key="typing" />}
           {phase === "typing-test" && <TypingTest key="typing-test" />}
+          {phase === "lucky-box" && <LuckyBox key="lucky-box" />}
           {phase === "result" && <ResultScreen key="result" />}
         </AnimatePresence>
       </div>

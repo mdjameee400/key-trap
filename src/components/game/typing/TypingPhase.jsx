@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useGame } from "../../context/GameContext";
-import { GAME_MODES } from "../../lib/gameData";
+import { useGame } from "../../../context/GameContext";
+import { GAME_MODES } from "../../../lib/gameData";
 
 export default function TypingPhase() {
     const { difficulty, questions, currentQuestionIndex, submitAnswer, nextQuestion, finishGame } = useGame();
