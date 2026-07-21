@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -6,8 +6,9 @@ import {
     signInWithPopup,
     GoogleAuthProvider
 } from "firebase/auth";
-import { auth } from "../lib/firebase";
+import { auth, isFirebaseConfigured } from "../lib/firebase";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { Mail, Lock, User as UserIcon } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Auth.css";
@@ -17,6 +18,13 @@ const Auth = () => {
     const location = useLocation();
     const [isToggled, setIsToggled] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (!isFirebaseConfigured) {
+            toast.error("Firebase is not configured. Please check your environment variables.");
+            setTimeout(() => navigate("/"), 2000);
+        }
+    }, [navigate]);
 
     // Sign In States
     const [loginEmail, setLoginEmail] = useState("");
@@ -29,6 +37,10 @@ const Auth = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        if (!isFirebaseConfigured) {
+            toast.error("Firebase is not configured");
+            return;
+        }
         setLoading(true);
         try {
             await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
@@ -43,6 +55,10 @@ const Auth = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        if (!isFirebaseConfigured) {
+            toast.error("Firebase is not configured");
+            return;
+        }
         setLoading(true);
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, registerEmail, registerPassword);
@@ -57,6 +73,10 @@ const Auth = () => {
     };
 
     const handleGoogleSignIn = async () => {
+        if (!isFirebaseConfigured) {
+            toast.error("Firebase is not configured");
+            return;
+        }
         const provider = new GoogleAuthProvider();
         setLoading(true);
         try {

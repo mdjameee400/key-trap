@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Brain, Keyboard, LogOut, User as UserIcon, LogIn } from "lucide-react";
 import { useGame } from "../../context/GameContext";
-import { auth } from "../../lib/firebase";
+import { auth, isFirebaseConfigured } from "../../lib/firebase";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "sonner";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -22,6 +22,10 @@ export default function HeroScreen() {
     }, [location.state, user, setPhase, navigate]);
 
     const handleLogout = async () => {
+        if (!isFirebaseConfigured) {
+            toast.error("Firebase is not configured");
+            return;
+        }
         try {
             await auth.signOut();
             toast.success("Logged out successfully");
