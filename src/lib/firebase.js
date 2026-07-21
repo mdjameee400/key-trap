@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, isSupported } from "firebase/analytics";
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "",
@@ -16,7 +16,7 @@ const firebaseConfig = {
 // Check if Firebase config is properly configured
 const isFirebaseConfigured = !!(firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.authDomain);
 
-let app, auth, db, analytics;
+let app, auth, db, analytics = null;
 
 if (isFirebaseConfigured) {
     try {
@@ -24,13 +24,17 @@ if (isFirebaseConfigured) {
         app = initializeApp(firebaseConfig);
         auth = getAuth(app);
         db = getFirestore(app);
-        
+
         if (typeof window !== "undefined") {
-            try {
-                analytics = getAnalytics(app);
-            } catch (e) {
-                console.warn("[v0] Analytics not available:", e.message);
-            }
+            isSupported().then(supported => {
+                if (supported) {
+                    try {
+                        analytics = getAnalytics(app);
+                    } catch (e) {
+                        console.warn("[v0] Analytics not available:", e.message);
+                    }
+                }
+            }).catch(() => {});
         }
         console.log("[v0] Firebase initialized successfully");
     } catch (error) {
