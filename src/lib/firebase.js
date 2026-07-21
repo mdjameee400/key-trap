@@ -14,20 +14,34 @@ const firebaseConfig = {
 };
 
 // Check if Firebase config is properly configured
-const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.projectId;
+const isFirebaseConfigured = !!(firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.authDomain);
 
 let app, auth, db, analytics;
 
 if (isFirebaseConfigured) {
-    app = initializeApp(firebaseConfig);
-    auth = getAuth(app);
-    db = getFirestore(app);
-    
-    if (typeof window !== "undefined") {
-        analytics = getAnalytics(app);
+    try {
+        console.log("[v0] Firebase initialization started with projectId:", firebaseConfig.projectId);
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+        
+        if (typeof window !== "undefined") {
+            try {
+                analytics = getAnalytics(app);
+            } catch (e) {
+                console.warn("[v0] Analytics not available:", e.message);
+            }
+        }
+        console.log("[v0] Firebase initialized successfully");
+    } catch (error) {
+        console.error("[v0] Firebase initialization error:", error);
     }
 } else {
-    console.warn("[Firebase] Configuration incomplete. Please set VITE_FIREBASE_* environment variables.");
+    console.warn("[v0] Firebase configuration incomplete:");
+    console.warn("[v0] - API Key:", firebaseConfig.apiKey ? "✓ Set" : "✗ Missing");
+    console.warn("[v0] - Project ID:", firebaseConfig.projectId ? "✓ Set" : "✗ Missing");
+    console.warn("[v0] - Auth Domain:", firebaseConfig.authDomain ? "✓ Set" : "✗ Missing");
+    console.warn("[v0] Please set VITE_FIREBASE_* environment variables in .env.local or Vercel");
 }
 
 export { app, auth, db, analytics, isFirebaseConfigured };

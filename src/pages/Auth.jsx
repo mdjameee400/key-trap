@@ -8,9 +8,8 @@ import {
 } from "firebase/auth";
 import { auth, isFirebaseConfigured } from "../lib/firebase";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-import { Mail, Lock, User as UserIcon } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Mail, Lock, User as UserIcon } from "lucide-react";
 import "./Auth.css";
 
 const Auth = () => {

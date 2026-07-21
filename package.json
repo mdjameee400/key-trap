@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "check-env": "node check-env.js",
+    "dev": "npm run check-env && vite",
     "server": "node server.js",
-    "dev-full": "concurrently \"npm run server\" \"npm run dev\"",
+    "dev-full": "npm run check-env && concurrently \"npm run server\" \"npm run dev\"",
     "build": "vite build",
     "lint": "eslint .",
     "test": "node scripts/test-stats.js",

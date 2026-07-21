@@ -20,12 +20,13 @@ export const AuthProvider = ({ children }) => {
             setUser(user);
             setLoading(false);
         });
+        
         return unsubscribe;
     }, []);
 
     return (
         <AuthContext.Provider value={{ user, loading, isConfigured: isFirebaseConfigured }}>
-            {!loading && children}
+            {children}
         </AuthContext.Provider>
     );
 };
