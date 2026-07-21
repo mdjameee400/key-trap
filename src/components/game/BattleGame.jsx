@@ -45,18 +45,27 @@ export default function BattleGame() {
             reconnection: true,
             reconnectionDelay: 1000,
             reconnectionDelayMax: 5000,
-            reconnectionAttempts: 5
+            reconnectionAttempts: 10,
+            transports: ['websocket', 'polling']
         });
 
         socketRef.current.on("connect", () => {
             console.log("[Socket] Connected:", socketRef.current.id);
+            console.log("[v0] Battle server connection established");
+            toast.success("Connected to battle server!");
             socketRef.current.emit("register-user", {
                 userId: user.uid,
                 username: user.displayName || "Anonymous"
             });
         });
 
+        socketRef.current.on("connect_error", (error) => {
+            console.error("[Socket] Connection error:", error);
+            toast.error("Cannot connect to battle server. Make sure backend is running on port 3001");
+        });
+
         socketRef.current.on("user-registered", (data) => {
+            console.log("[Socket] User registered with stats:", data.stats);
             setUserStats(data.stats);
         });
 
@@ -111,7 +120,7 @@ export default function BattleGame() {
         });
 
         socketRef.current.on("disconnect", () => {
-            console.log("[Socket] Disconnected");
+            console.log("[Socket] Disconnected from server");
         });
 
         return () => {
@@ -200,11 +209,17 @@ export default function BattleGame() {
     };
 
     const createBattle = () => {
+        if (!socketRef.current?.connected) {
+            toast.error("Not connected to battle server!");
+            return;
+        }
         socketRef.current?.emit("create-battle-room", (response) => {
-            if (response.success) {
+            if (response?.success) {
                 setRoomId(response.roomId);
                 setGameState("room-setup");
                 toast.success(`Room created: ${response.roomId}`);
+            } else {
+                toast.error(response?.error || "Failed to create room");
             }
         });
     };
@@ -215,34 +230,57 @@ export default function BattleGame() {
             return;
         }
 
+        if (!socketRef.current?.connected) {
+            toast.error("Not connected to battle server!");
+            return;
+        }
+
         socketRef.current?.emit("join-battle-room", joinCode, (response) => {
-            if (response.success) {
+            if (response?.success) {
                 setRoomId(response.roomId);
                 setGameState("waiting");
                 toast.success(`Joined room: ${joinCode}`);
             } else {
-                toast.error(response.error);
+                toast.error(response?.error || "Failed to join room");
             }
         });
     };
 
     const startBattleGame = () => {
+        if (!socketRef.current?.connected) {
+            toast.error("Not connected to battle server!");
+            return;
+        }
         socketRef.current?.emit("start-battle", {
             roomId,
             gameData: { questions, difficulty: "battle" }
+        }, (response) => {
+            if (!response?.success) {
+                toast.error(response?.error || "Failed to start battle");
+            }
         });
     };
 
     const joinMatchmaking = () => {
+        if (!socketRef.current?.connected) {
+            toast.error("Not connected to battle server!");
+            return;
+        }
         socketRef.current?.emit("join-queue", (response) => {
-            if (response.success) {
+            if (response?.success) {
                 setGameState("waiting");
                 toast.success("Joined matchmaking queue!");
+            } else {
+                toast.error(response?.error || "Failed to join queue");
             }
         });
     };
 
     const sendEmoji = (emoji) => {
+        if (!socketRef.current?.connected) {
+            console.warn("[v0] Socket not connected when sending emoji");
+            return;
+        }
         socketRef.current?.emit("send-emoji", { roomId, emoji });
     };
 
