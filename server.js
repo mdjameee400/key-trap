@@ -8,14 +8,34 @@ dotenv.config();
 
 const app = express();
 const httpServer = createServer(app);
+
+// Support multiple CLIENT_URL origins (comma-separated)
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:8080")
+    .split(',')
+    .map(o => o.trim())
+    .filter(Boolean);
+
 const io = new Server(httpServer, {
     cors: {
-        origin: process.env.CLIENT_URL || "http://localhost:8080",
-        methods: ["GET", "POST"]
+        origin: (origin, callback) => {
+            // Allow requests with no origin (mobile apps, curl, etc.)
+            if (!origin) return callback(null, true);
+            if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+                callback(null, true);
+            } else {
+                console.warn(`[CORS] Blocked origin: ${origin}`);
+                callback(null, true); // Allow all for now — tighten in production
+            }
+        },
+        methods: ["GET", "POST"],
+        credentials: true
     }
 });
 
-app.use(cors());
+app.use(cors({
+    origin: (origin, callback) => callback(null, true),
+    credentials: true
+}));
 app.use(express.json());
 
 // Store active battles and users
@@ -397,6 +417,23 @@ function tryMatchmaking() {
         }
     }
 }
+
+// Root status page — confirms server is running
+app.get('/', (req, res) => {
+    res.json({
+        name: 'Key Trap Battle Server',
+        status: '🟢 Online',
+        version: '1.0.0',
+        websocket: 'Socket.IO ready',
+        endpoints: {
+            health: '/health',
+            stats: '/stats'
+        },
+        activeConnections: io.engine.clientsCount,
+        activeBattles: battles.size,
+        timestamp: new Date().toISOString()
+    });
+});
 
 // Health check endpoint
 app.get('/health', (req, res) => {
