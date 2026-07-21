@@ -23,6 +23,8 @@ export default function BattleGame() {
     const [joinCode, setJoinCode] = useState("");
     const [opponent, setOpponent] = useState(null);
     const [userStats, setUserStats] = useState(null);
+    const [socketConnected, setSocketConnected] = useState(false);
+    const [socketError, setSocketError] = useState(null);
 
     // Battle progress
     const [hostProgress, setHostProgress] = useState({ charsTyped: 0, wpm: 0, accuracy: 0, currentQuestion: 0 });
@@ -37,7 +39,7 @@ export default function BattleGame() {
     const [battleResult, setBattleResult] = useState(null);
     const [emojis, setEmojis] = useState([]);
 
-    // Initialize WebSocket connection
+    // Initialize WebSocket connection — only when user is logged in
     useEffect(() => {
         if (!user) return;
 
@@ -45,13 +47,15 @@ export default function BattleGame() {
             reconnection: true,
             reconnectionDelay: 1000,
             reconnectionDelayMax: 5000,
-            reconnectionAttempts: 10,
-            transports: ['websocket', 'polling']
+            reconnectionAttempts: 5,
+            transports: ['websocket', 'polling'],
+            timeout: 5000
         });
 
         socketRef.current.on("connect", () => {
             console.log("[Socket] Connected:", socketRef.current.id);
-            console.log("[v0] Battle server connection established");
+            setSocketConnected(true);
+            setSocketError(null);
             toast.success("Connected to battle server!");
             socketRef.current.emit("register-user", {
                 userId: user.uid,
@@ -61,7 +65,12 @@ export default function BattleGame() {
 
         socketRef.current.on("connect_error", (error) => {
             console.error("[Socket] Connection error:", error);
-            toast.error("Cannot connect to battle server. Make sure backend is running on port 3001");
+            setSocketConnected(false);
+            setSocketError("Battle server is offline. Real-time battles require the backend server to be running.");
+        });
+
+        socketRef.current.on("disconnect", () => {
+            setSocketConnected(false);
         });
 
         socketRef.current.on("user-registered", (data) => {
@@ -119,12 +128,9 @@ export default function BattleGame() {
             toast.success(`Matched with ${data.opponent.username}!`);
         });
 
-        socketRef.current.on("disconnect", () => {
-            console.log("[Socket] Disconnected from server");
-        });
-
         return () => {
             socketRef.current?.disconnect();
+            setSocketConnected(false);
         };
     }, [user]);
 
@@ -289,6 +295,59 @@ export default function BattleGame() {
         toast.success("Room code copied!");
     };
 
+    // If user is not logged in, show a login prompt instead of blank screen
+    if (!user) {
+        return (
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col items-center justify-center min-h-screen gap-6 px-4 py-8"
+            >
+                <div className="relative w-full max-w-5xl flex items-center justify-center mb-4">
+                    <motion.button
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => setPhase("game-mode-select")}
+                        className="absolute left-0 p-2 rounded-full bg-destructive/10 text-destructive border border-destructive/20 hover:bg-destructive/20 transition-colors"
+                    >
+                        <ArrowLeft className="w-6 h-6" />
+                    </motion.button>
+                    <h1 className="text-4xl md:text-5xl font-display font-black text-glow-cyan text-primary uppercase tracking-wider">
+                        ⚡ Battle Mode
+                    </h1>
+                </div>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="max-w-md w-full p-8 rounded-xl neon-border-cyan bg-card/30 backdrop-blur-md text-center space-y-6"
+                >
+                    <div className="p-5 rounded-2xl bg-primary/10 text-primary border border-primary/20 w-fit mx-auto">
+                        <Zap className="w-12 h-12 text-glow-cyan" />
+                    </div>
+                    <div className="space-y-2">
+                        <h2 className="text-2xl font-display font-black uppercase tracking-wider text-primary text-glow-cyan">
+                            Login Required
+                        </h2>
+                        <p className="text-sm text-muted-foreground">
+                            You need to be logged in to access Battle Mode and challenge other players in real-time.
+                        </p>
+                    </div>
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setPhase("hero")}
+                        className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-primary to-cyan-400 text-black font-display font-bold uppercase tracking-wider"
+                    >
+                        Go to Login
+                    </motion.button>
+                </motion.div>
+            </motion.div>
+        );
+    }
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -312,6 +371,40 @@ export default function BattleGame() {
                     ⚡ Battle Mode
                 </h1>
             </div>
+
+            {/* Connection Status Banner */}
+            <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-display font-bold uppercase tracking-wider border ${
+                    socketConnected
+                        ? "bg-green-500/10 text-green-400 border-green-500/30"
+                        : socketError
+                            ? "bg-red-500/10 text-red-400 border-red-500/30"
+                            : "bg-yellow-500/10 text-yellow-400 border-yellow-500/30"
+                }`}
+            >
+                <span className={`w-2 h-2 rounded-full ${
+                    socketConnected ? "bg-green-400 animate-pulse" :
+                    socketError ? "bg-red-400" : "bg-yellow-400 animate-pulse"
+                }`} />
+                {socketConnected ? "Connected to Battle Server" :
+                 socketError ? "Battle Server Offline" : "Connecting to Battle Server..."}
+            </motion.div>
+
+            {/* Server Offline Warning */}
+            {socketError && (
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="max-w-lg w-full p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-center space-y-2"
+                >
+                    <p className="text-sm text-red-400">{socketError}</p>
+                    <p className="text-xs text-muted-foreground">
+                        The WebSocket backend (server.js) needs to be deployed to a server like Railway or Render for real-time battles to work on hosted environments.
+                    </p>
+                </motion.div>
+            )}
 
             {/* User Stats */}
             {userStats && (
