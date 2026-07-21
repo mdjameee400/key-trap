@@ -10,6 +10,7 @@ import TypingTest from "../components/game/typing/TypingTest";
 import ResultScreen from "../components/game/ResultScreen";
 import StarField from "../components/game/StarField";
 import LuckyBox from "../components/game/lucky-box/LuckyBox";
+import BattleMode from "../components/game/BattleMode";
 
 function GameRouter() {
   const { phase } = useGame();
@@ -25,6 +26,7 @@ function GameRouter() {
           {phase === "memory" && <MemoryPhase key="memory" />}
           {phase === "typing" && <TypingPhase key="typing" />}
           {phase === "typing-test" && <TypingTest key="typing-test" />}
+          {phase === "battle" && <BattleMode key="battle" />}
           {phase === "lucky-box" && <LuckyBox key="lucky-box" />}
           {phase === "result" && <ResultScreen key="result" />}
         </AnimatePresence>

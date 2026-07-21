@@ -10,6 +10,7 @@ export default defineConfig(() => ({
     server: {
         host: true,
         port: 8080,
+        allowedHosts: ["sb-3vvp2q01b1o5.vercel.run"],
     },
     plugins: [react()],
     resolve: {
