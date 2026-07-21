@@ -1,24 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useGame } from "../../context/GameContext";
-import { Target, Gauge, AlertTriangle, Trophy, RotateCcw, CheckCircle, XCircle } from "lucide-react";
+import { Target, Gauge, AlertTriangle, Trophy, RotateCcw, CheckCircle, XCircle, ShieldCheck, Activity, Zap } from "lucide-react";
+import MonkeytypeSyncModal from "./MonkeytypeSyncModal";
 
 export default function ResultScreen() {
     const { result, resetGame, setPhase, startTypingTest } = useGame();
+    const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+
     if (!result) return null;
 
-    const stats = [
+    const isTypingTest = result.difficulty === "typing-test";
+
+    const stats = isTypingTest ? [
+        { label: "Net WPM", value: String(result.wpmDisplay ?? result.wpm), icon: Gauge, color: "text-neon-cyan text-glow-cyan" },
+        { label: "Raw WPM", value: String(result.rawWpmDisplay ?? result.rawWpm ?? result.wpm), icon: Zap, color: "text-primary" },
+        { label: "Accuracy", value: `${result.accuracyDisplay ?? result.accuracy}%`, icon: Target, color: "text-neon-green text-glow-green" },
+        { label: "Consistency", value: `${result.consistency ?? 100}%`, icon: Activity, color: "text-neon-yellow" },
+    ] : [
         { label: "Accuracy", value: `${result.accuracy}%`, icon: Target, color: "text-neon-cyan text-glow-cyan" },
         { label: "WPM", value: String(result.wpm), icon: Gauge, color: "text-neon-green text-glow-green" },
         { label: "Mistakes", value: String(result.mistakes), icon: AlertTriangle, color: "text-neon-orange text-glow-orange" },
         { label: "Final Score", value: String(result.score), icon: Trophy, color: "text-neon-yellow" },
     ];
 
-    const isTypingTest = result.difficulty === "typing-test";
-
     const feedback = isTypingTest
         ? (result.wpm >= 80 ? "🔥 Typing Speed Demon!" : result.wpm >= 40 ? "💪 Solid Rhythm!" : "⌨️ Keep Practicing!")
         : (result.accuracy >= 80 ? "🔥 Outstanding Memory!" : result.accuracy >= 50 ? "💪 Good Effort!" : "🧠 Keep Practicing!");
+
+    const charStats = result.charStats || [result.correct || 0, result.wrong || 0, 0, 0];
 
     return (
         <motion.div
@@ -51,7 +61,7 @@ export default function ResultScreen() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 + i * 0.1 }}
-                        className="flex flex-col items-center gap-2 p-4 rounded-lg bg-card/60 backdrop-blur-sm border border-border"
+                        className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card/60 backdrop-blur-sm border border-border shadow-lg"
                     >
                         <stat.icon className={`w-5 h-5 ${stat.color}`} />
                         <span className="text-xs font-body text-muted-foreground uppercase tracking-wider">{stat.label}</span>
@@ -59,6 +69,39 @@ export default function ResultScreen() {
                     </motion.div>
                 ))}
             </div>
+
+            {/* Character Stats Breakdown for Typing Test */}
+            {isTypingTest && (
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="w-full max-w-2xl p-4 rounded-xl bg-card/40 border border-white/10 backdrop-blur-sm flex flex-col gap-3"
+                >
+                    <div className="flex justify-between items-center text-xs font-display uppercase tracking-wider text-muted-foreground">
+                        <span>Character Stats Breakdown</span>
+                        <span className="font-mono text-primary text-[11px]">charStats: [{charStats.join(", ")}]</span>
+                    </div>
+                    <div className="grid grid-cols-4 gap-2 text-center font-mono text-sm">
+                        <div className="p-2 rounded-lg bg-neon-green/10 border border-neon-green/20">
+                            <span className="block text-xs text-muted-foreground">Correct</span>
+                            <span className="text-neon-green font-bold">{charStats[0]}</span>
+                        </div>
+                        <div className="p-2 rounded-lg bg-neon-red/10 border border-neon-red/20">
+                            <span className="block text-xs text-muted-foreground">Incorrect</span>
+                            <span className="text-neon-red font-bold">{charStats[1]}</span>
+                        </div>
+                        <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                            <span className="block text-xs text-muted-foreground">Extra</span>
+                            <span className="text-foreground font-bold">{charStats[2]}</span>
+                        </div>
+                        <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                            <span className="block text-xs text-muted-foreground">Missed</span>
+                            <span className="text-foreground font-bold">{charStats[3]}</span>
+                        </div>
+                    </div>
+                </motion.div>
+            )}
 
             {!isTypingTest && (
                 <div className="w-full max-w-2xl space-y-2">
@@ -94,25 +137,44 @@ export default function ResultScreen() {
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 1 }}
-                className="flex gap-4 mt-4"
+                transition={{ delay: 0.6 }}
+                className="flex flex-wrap justify-center gap-4 mt-2"
             >
                 <button
                     onClick={isTypingTest ? () => { resetGame(); startTypingTest(); } : resetGame}
-                    className="flex items-center gap-2 px-6 py-3 rounded-lg font-display font-bold text-sm uppercase tracking-wider
-            neon-border-cyan bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl font-display font-bold text-sm uppercase tracking-wider
+            neon-border-cyan bg-primary/10 text-primary hover:bg-primary/20 transition-colors shadow-lg"
                 >
                     <RotateCcw className="w-4 h-4" />
                     Play Again
                 </button>
+
+                {isTypingTest && (
+                    <button
+                        onClick={() => setIsSyncModalOpen(true)}
+                        className="flex items-center gap-2 px-6 py-3 rounded-xl font-display font-bold text-sm uppercase tracking-wider
+              border border-primary/40 bg-primary/20 text-primary hover:bg-primary/30 transition-all shadow-[0_0_15px_rgba(34,211,238,0.2)]"
+                    >
+                        <ShieldCheck className="w-4 h-4 text-neon-cyan" />
+                        Verify API Math
+                    </button>
+                )}
+
                 <button
                     onClick={() => { resetGame(); setPhase(isTypingTest ? "hero" : "mode-select"); }}
-                    className="flex items-center gap-2 px-6 py-3 rounded-lg font-display font-bold text-sm uppercase tracking-wider
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl font-display font-bold text-sm uppercase tracking-wider
             border border-border bg-card/50 text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
                 >
                     {isTypingTest ? "Exit to Menu" : "Change Mode"}
                 </button>
             </motion.div>
+
+            {/* Monkeytype API Ground Truth Modal */}
+            <MonkeytypeSyncModal
+                isOpen={isSyncModalOpen}
+                onClose={() => setIsSyncModalOpen(false)}
+                currentResult={result}
+            />
         </motion.div>
     );
 }

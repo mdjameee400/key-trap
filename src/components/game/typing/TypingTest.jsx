@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGame } from "../../../context/GameContext";
 import { RotateCcw, Timer, ArrowLeft, Home } from "lucide-react";
+import { calculateStats } from "../../../lib/typingStats";
 
 export default function TypingTest() {
     const { questions: words, finishTypingTest, startTypingTest, startTime: initialDuration, setPhase } = useGame();
@@ -11,6 +12,7 @@ export default function TypingTest() {
     const [isFocused, setIsFocused] = useState(true);
     const [mistakes, setMistakes] = useState(0);
     const [correctChars, setCorrectChars] = useState(0);
+    const [wpmHistory, setWpmHistory] = useState([]);
     const [caretPos, setCaretPos] = useState({ x: 0, y: 0 });
     const [lineOffset, setLineOffset] = useState(0);
 
@@ -26,6 +28,7 @@ export default function TypingTest() {
         setIsActive(false);
         setMistakes(0);
         setCorrectChars(0);
+        setWpmHistory([]);
         setLineOffset(0);
     }, [initialDuration, words]);
 
@@ -34,19 +37,22 @@ export default function TypingTest() {
         const duration = initialDuration;
         const totalTyped = userInput.length;
 
-        const timeInMinutes = duration / 60;
-        const wpm = Math.round((totalTyped / 5) / timeInMinutes);
-        const accuracy = totalTyped > 0 ? Math.round((correctChars / totalTyped) * 100) : 100;
+        // Calculate standard Monkeytype stats using standard formula engine
+        const stats = calculateStats({
+            correctChars,
+            totalChars: totalTyped,
+            timeInSeconds: duration,
+            wpmHistory
+        });
 
         finishTypingTest({
-            accuracy,
-            wpm,
+            ...stats,
             mistakes,
             correctChars,
             totalTyped,
             duration
         });
-    }, [userInput, initialDuration, correctChars, mistakes, finishTypingTest]);
+    }, [userInput, initialDuration, correctChars, mistakes, wpmHistory, finishTypingTest]);
 
     useEffect(() => {
         let interval = null;
@@ -57,12 +63,17 @@ export default function TypingTest() {
                         clearInterval(interval);
                         return 0;
                     }
+                    const elapsed = initialDuration - (time - 1);
+                    if (elapsed > 0) {
+                        const currentInstantWpm = (correctChars / 5) / (elapsed / 60);
+                        setWpmHistory((prev) => [...prev, currentInstantWpm]);
+                    }
                     return time - 1;
                 });
             }, 1000);
         }
         return () => clearInterval(interval);
-    }, [isActive]);
+    }, [isActive, initialDuration, correctChars]);
 
     useEffect(() => {
         if (timeLeft === 0 && isActive) {

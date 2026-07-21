@@ -116,18 +116,22 @@ export function GameProvider({ children }) {
     }, []);
 
     const finishTypingTest = useCallback((stats) => {
-        const { accuracy, wpm, mistakes, correctChars, totalTyped, duration } = stats;
+        const { accuracy, wpm, rawWpm, mistakes, correctChars, totalTyped, duration, charStats, consistency } = stats;
         const score = calculateScore(correctChars, totalTyped, duration, totalTyped, null);
 
         setState((s) => ({
             ...s,
             phase: "result",
             result: {
+                ...stats,
                 correct: correctChars,
                 wrong: mistakes,
                 totalQuestions: totalTyped,
                 accuracy,
                 wpm,
+                rawWpm,
+                charStats,
+                consistency,
                 mistakes,
                 score,
                 difficulty: "typing-test",
