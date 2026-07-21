@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useGame } from "../../context/GameContext";
-import { ArrowLeft, Brain, Sparkles, Gift } from "lucide-react";
+import { ArrowLeft, Brain, Sparkles, Gift, Zap } from "lucide-react";
 
 export default function GameModeSelect() {
     const { setPhase } = useGame();
@@ -33,7 +33,7 @@ export default function GameModeSelect() {
                 </motion.h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-5xl">
                 {/* Memorize Mode */}
                 <motion.button
                     initial={{ opacity: 0, x: -30 }}
@@ -84,11 +84,36 @@ export default function GameModeSelect() {
                     </div>
                 </motion.div>
 
-                {/* Lucky Box Mode */}
+                {/* Battle Mode */}
                 <motion.button
                     initial={{ opacity: 0, x: 30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 }}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setPhase("battle")}
+                    className="group relative flex flex-col items-center gap-6 p-8 rounded-xl neon-border-orange bg-card/30 backdrop-blur-md transition-all duration-500 overflow-hidden"
+                >
+                    <div className="absolute inset-0 bg-gradient-to-br from-destructive/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="relative z-10 p-5 rounded-2xl bg-destructive/10 text-destructive border border-destructive/20 group-hover:scale-110 group-hover:neon-border-orange transition-all duration-500">
+                        <Zap className="w-12 h-12" />
+                    </div>
+                    <div className="relative z-10 text-center space-y-3">
+                        <h3 className="text-3xl font-display font-black uppercase tracking-[0.2em] text-destructive">
+                            Battle Mode
+                        </h3>
+                        <p className="text-xs font-body text-muted-foreground uppercase tracking-widest leading-relaxed">
+                            Challenge a friend<br />in real-time typing
+                        </p>
+                    </div>
+                    <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-destructive to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700" />
+                </motion.button>
+
+                {/* Lucky Box Mode */}
+                <motion.button
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
                     whileHover={{ scale: 1.05, y: -5 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setPhase("lucky-box")}

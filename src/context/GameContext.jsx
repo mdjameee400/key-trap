@@ -19,6 +19,7 @@ export function GameProvider({ children }) {
         startTime: 0,
         totalCharsTyped: 0,
         result: null,
+        battlePhase: null,
     });
 
     const setPhase = useCallback((phase) => {
@@ -99,6 +100,7 @@ export function GameProvider({ children }) {
             startTime: 0,
             totalCharsTyped: 0,
             result: null,
+            battlePhase: null,
         });
     }, []);
 
